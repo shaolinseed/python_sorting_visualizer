@@ -6,7 +6,7 @@ from pygame.constants import QUIT
 pygame.init()
 
 class DrawInformation:
-    #initalize constants (tuples)
+    #initalize color constants (tuples)
     BLACK = 0, 0, 0
     WHITE = 255, 255, 255
     GREEN = 0, 255, 0
@@ -14,12 +14,11 @@ class DrawInformation:
    
     BACKGROUND_COLOR = WHITE
 
+    #grays to color bars
     GRADIENTS = [(128, 128, 128), (160, 160, 160), (192, 192, 192)]
 
     SIDE_PADDING = 100
     TOP_PADDING = 150
-
-
 
     #constructor 
     def __init__(self, width, height, list):
@@ -62,7 +61,7 @@ def draw(draw_info, algo_name, ascending):
     controls = draw_info.FONT.render("R - Reset | SPACE - Sort | A - Ascending | D - Descending", 1, draw_info.BLACK)
     draw_info.window.blit(controls, (draw_info.width/2 - controls.get_width()/2 , 35))
 
-    controls = draw_info.FONT.render("I - Insertion Sort | B - Bubble Sort", 1, draw_info.BLACK)
+    controls = draw_info.FONT.render("I - Insertion Sort | B - Bubble Sort | S - Selection Sort", 1, draw_info.BLACK)
     draw_info.window.blit(controls, (draw_info.width/2 - controls.get_width()/2 , 65))
 
     draw_list(draw_info)
@@ -124,7 +123,7 @@ def main():
     draw_info = DrawInformation(800, 600, list)
 
     while run:
-        clock.tick(120)
+        clock.tick(20)
 
         if sorting:
             try:
@@ -167,11 +166,11 @@ def main():
             elif event.key == pygame.K_i and not sorting:
                 sorting_algo = insertion_sort
                 sorting_algo_name = "Insertion Sort"
-            
+            elif event.key == pygame.K_s and not sorting:
+                sorting_algo = selection_sort
+                sorting_algo_name = "Selection Sort"
 
-            
-
-
+        
         
     pygame.quit()
 
@@ -214,6 +213,27 @@ def insertion_sort(draw_info, ascending=True):
 
     return list
 
+
+def selection_sort(draw_info, ascending=True):
+    list = draw_info.list
+
+    for i in range(0, len(list) - 1):
+        edge_value = i
+
+        for j in range(i + 1, len(list)):
+            if (ascending):
+                if list[j] < list[edge_value]:
+                    edge_value = j
+            else:
+                if list[j] > list[edge_value]:
+                    edge_value = j
+        if (edge_value != i):
+            list[edge_value], list[i] = list[i], list[edge_value]
+            draw_list(draw_info, {i: draw_info.GREEN, edge_value: draw_info.RED}, True)
+            yield True
+
+
+    return list
 
 
 #if module is directly run execute main function
